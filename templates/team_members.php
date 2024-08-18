@@ -1,6 +1,6 @@
 <?php
 
-$isShowSeeAll = get_option('tmembers_is_show_see_all', '');
+$isShowSeeAll = get_option('tmembers_is_disable_see_all', '');
 $numberOfItem = get_option('tmembers_number_of_item', '') ?? 4;
 
 $posts = get_posts([
@@ -25,7 +25,7 @@ $posts = get_posts([
             </div>
         <?php endforeach;?>
     </div>
-    <?php if ($isShowSeeAll): ?>
+    <?php if (!$isShowSeeAll): ?>
         <div style="text-align: center; padding: 10px 0;">
             <a style="padding: 5px;" href="#"><?= __('See All')?></a>
         </div>

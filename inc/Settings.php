@@ -5,7 +5,7 @@ class Settings extends BaseComponent
 {
     protected const OPTION_GROUP_TEAM_MEMBER_SETTING = 'tmembers_group_team_member_setting';
 
-    public const OPTION_IS_SHOW_SEE_ALL = 'tmembers_is_show_see_all';
+    public const OPTION_IS_DISABLE_SEE_ALL = 'tmembers_is_disable_see_all';
     public const OPTION_NUMBER_OF_ITEM = 'tmembers_number_of_item';
     public const OPTION_POST_TYPE_URL = 'tmembers_post_type_url';
 
@@ -70,23 +70,23 @@ class Settings extends BaseComponent
     public function settings_init(){
         register_setting(
             self::OPTION_GROUP_TEAM_MEMBER_SETTING,
-            self::OPTION_IS_SHOW_SEE_ALL
+            self::OPTION_IS_DISABLE_SEE_ALL
         );
 
 
         add_settings_section(
-            'tmembers_is_show_see_all_section',
-            'Teem Members Settings',
+            'tmembers_shortcode_section',
+            'Teem Members Shortcode Setting',
             null,
-            'tmembers_is_show_see_all'
+            'team_members_setting'
         );
 
         add_settings_field(
-            self::OPTION_IS_SHOW_SEE_ALL,
-            'Is Show See All Button',
+            self::OPTION_IS_DISABLE_SEE_ALL,
+            'Is Disable See All Button',
             [$this, 'render_is_show_all'],
-            'tmembers_is_show_see_all',
-            'tmembers_is_show_see_all_section'
+            'team_members_setting',
+            'tmembers_shortcode_section'
         );
 
         register_setting(
@@ -98,8 +98,8 @@ class Settings extends BaseComponent
             self::OPTION_NUMBER_OF_ITEM,
             'Show Number of tema member',
             [$this, 'render_number_of_team_member'],
-            'tmembers_is_show_see_all',
-            'tmembers_is_show_see_all_section'
+            'team_members_setting',
+            'tmembers_shortcode_section'
         );
 
         register_setting(
@@ -107,19 +107,26 @@ class Settings extends BaseComponent
             self::OPTION_POST_TYPE_URL
         );
 
+        add_settings_section(
+            'tmembers_post_type_url_section',
+            'Teem Members Post Type Setting',
+            null,
+            'team_members_setting'
+        );
+
         add_settings_field(
             self::OPTION_POST_TYPE_URL,
             'Team Member Post Type URL',
             [$this, 'render_tm_pt'],
-            'tmembers_is_show_see_all',
-            'tmembers_is_show_see_all_section'
+            'team_members_setting',
+            'tmembers_post_type_url_section'
         );
 
     }
 
     public function render_is_show_all(){
-        $value = get_option(self::OPTION_IS_SHOW_SEE_ALL, '');
-        echo '<input type="checkbox" name="' . self::OPTION_IS_SHOW_SEE_ALL . '" value="1" '. checked(1, $value, false).'>';
+        $value = get_option(self::OPTION_IS_DISABLE_SEE_ALL, '');
+        echo '<input type="checkbox" name="' . self::OPTION_IS_DISABLE_SEE_ALL . '" value="1" '. checked(1, $value, false).'>';
     }
 
     public function render_number_of_team_member(){

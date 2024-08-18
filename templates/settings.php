@@ -3,7 +3,8 @@
     <hr>
     <form method="post" action="options.php">
         <?php  settings_fields('tmembers_group_team_member_setting');  ?>
-        <?php  do_settings_sections('tmembers_is_show_see_all');  ?>
+        <?php //settings_fields('tmembers_group_team_member_post_type_setting');  ?>
+        <?php  do_settings_sections('team_members_setting');  ?>
         <?php submit_button(); ?>
     </form>
 </div>
