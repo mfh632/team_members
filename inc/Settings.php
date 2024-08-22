@@ -7,66 +7,18 @@ class Settings extends BaseComponent
 
     public const OPTION_IS_DISABLE_SEE_ALL = 'tmembers_is_disable_see_all';
     public const OPTION_NUMBER_OF_ITEM = 'tmembers_number_of_item';
-    public const OPTION_POST_TYPE_URL = 'tmembers_post_type_url';
 
     public function __construct()
     {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_init', [$this, 'settings_init']);
-        add_action('init', [$this, 'tmembers_post_type']);
-        add_filter( 'single_template', [$this, 'tmembers_single_template'] ) ;
-        add_filter( 'archive_template', [$this, 'tmembers_archive_template'] ) ;
-        add_action( 'pre_get_posts' ,[$this,'tmembers_query_post_type_team_members'], 1, 1 );
     }
 
-    public function tmembers_post_type(){
-        $slug = get_option(self::OPTION_POST_TYPE_URL, '') ?? 'team-members';
-        register_post_type('team_members',[
-            'labels' => [
-                'name' => __('Team Members', 'tmembers'),
-                'singular_name' => __('Team Member', 'tmembers'),
-                'add_new_item' => __( 'Add New Team Member', 'tmembers' ),
-                'add_new' => __( 'Add New Member', 'tmembers' ),
-            ],
-            'public'      => true,
-            'has_archive' => true,
-            'rewrite'     => array( 'slug' => $slug),
-            'supports' => array(''),
-        //    'taxonomies' => array( 'member_type'),
-        ]);
 
-        $this->tmembers_member_type();
-    }
 
     /**
-     * Add member_type taxonomies
+     * Add Team Member Setting Options
      */
-    public function tmembers_member_type() {
-        $labels = array(
-            'name' => _x( 'Member Type', 'taxonomy general name' ),
-            'singular_name' => _x( 'Member Type', 'taxonomy singular name' ),
-            'search_items' =>  __( 'Search Member Types' ),
-            'all_items' => __( 'All Member Types' ),
-            'parent_item' => __( 'Parent Member Type' ),
-            'parent_item_colon' => __( 'Parent Member Type:' ),
-            'edit_item' => __( 'Edit Member Type' ),
-            'update_item' => __( 'Update Member Type' ),
-            'add_new_item' => __( 'Add New Member Type' ),
-            'new_item_name' => __( 'New Member Type' ),
-            'menu_name' => __( 'Member Type' ),
-        );
-        register_taxonomy(
-            'member_type',
-            'team_members',
-            array(
-                'labels' => $labels,
-                'rewrite' => array( 'slug' => 'member-type' ),
-                'hierarchical' => true,
-            )
-        );
-    }
-
-
     public function settings_init(){
         register_setting(
             self::OPTION_GROUP_TEAM_MEMBER_SETTING,
@@ -104,7 +56,7 @@ class Settings extends BaseComponent
 
         register_setting(
             self::OPTION_GROUP_TEAM_MEMBER_SETTING,
-            self::OPTION_POST_TYPE_URL
+            TMEMBERS_OPTION_POST_TYPE_URL
         );
 
         add_settings_section(
@@ -115,7 +67,7 @@ class Settings extends BaseComponent
         );
 
         add_settings_field(
-            self::OPTION_POST_TYPE_URL,
+            TMEMBERS_OPTION_POST_TYPE_URL,
             'Team Member Post Type URL',
             [$this, 'render_tm_pt'],
             'team_members_setting',
@@ -135,8 +87,9 @@ class Settings extends BaseComponent
     }
 
     public function render_tm_pt(){
-        $value = get_option(self::OPTION_POST_TYPE_URL, '');
-        echo '<input type="text" name="' . self::OPTION_POST_TYPE_URL . '" value="'. $value .'">';
+        $value = get_option(TMEMBERS_OPTION_POST_TYPE_URL, '');
+        echo "<p style='margin-bottom: 5px; color:#d01b1b;'>" . __('Default URL: ') ." <strong>". TMEMBERS_DEFAULT_POST_TYPE_URL."</strong></p>";
+        echo '<input type="text" name="' . TMEMBERS_OPTION_POST_TYPE_URL . '" value="'. $value .'">';
     }
 
     public function add_admin_menu(){
@@ -149,33 +102,11 @@ class Settings extends BaseComponent
         );
     }
 
+    /**
+     * Set team member setting template
+     */
     public function team_members_setting(){
         require_once(TMEMBERS_PLUGIN_DIR . '/templates/settings.php');
     }
 
-    public function tmembers_single_template($single_template){
-        global $post;
-
-        if ( 'team_members' === $post->post_type ) {
-            $single_template = TMEMBERS_PLUGIN_DIR . '/templates/single-team_members.php';
-        }
-
-        return $single_template;
-    }
-
-    function tmembers_archive_template( $archive_template ) {
-        global $post;
-
-        if ( is_post_type_archive ( 'team_members' ) ) {
-            $archive_template = TMEMBERS_PLUGIN_DIR . '/templates/archive-team_members.php';
-        }
-        return $archive_template;
-    }
-
-    public function tmembers_query_post_type_team_members($query){
-        if ( ! is_admin() && is_post_type_archive( 'team_members' ) && $query->is_main_query() )
-        {
-            $query->set( 'posts_per_page', 8 );
-        }
-    }
 }

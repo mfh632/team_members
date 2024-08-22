@@ -29,30 +29,21 @@ $description = get_the_archive_description();
             <?php
                 the_post();
                 $postIde = get_the_ID();
-
-                $name = get_post_meta($postIde, 'tmembers_name', true);
-                $picture = get_post_meta($postIde, 'tmembers_picture', true);
-                $bio = get_post_meta($postIde, 'tmembers_bio', true);
                 $position = get_post_meta($postIde, 'tmembers_position', true);
                 $pictureSrc = TMEMBERS_PLUGIN_URL . "public/images/member.jpg";
                 $image_size = '200x200';
-                if ($image_attributes = wp_get_attachment_image_src($picture, $image_size)) {
-                    // $image_attributes[0] - image URL
-                    // $image_attributes[1] - image width
-                    // $image_attributes[2] - image height
-                    $pictureSrc = $image_attributes[0];
-                }
             ?>
             <div class="grid-item">
                 <a href="<?= get_permalink() ?>">
-                    <?php if ($pictureSrc): ?>
-                    <img src="<?= $pictureSrc?>" class="tmembers-img" alt="<?= $name ?>">
+                    <?php if (has_post_thumbnail()): ?>
+                    <?=  get_the_post_thumbnail( $post, $image_size ) ?>
+                    <?php else: ?>
+                        <img src="<?= $pictureSrc?>" class="tmembers-img" alt="<?= get_the_title() ?>">
                     <?php endif; ?>
-                    <h3><?= $name ?></h3>
+                    <h2><?= get_the_title() ?></h2>
                 </a>
                 <p><?= $position ?></p>
             </div>
-            <?php // get_template_part( 'template-parts/content/content', get_theme_mod( 'display_excerpt_or_full_post', 'excerpt' ) ); ?>
         <?php endwhile; ?>
 
 
@@ -109,7 +100,5 @@ $description = get_the_archive_description();
         }
     </style>
 <?php
-
-echo do_shortcode('[team_members]');
 
 get_footer();
