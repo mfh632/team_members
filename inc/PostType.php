@@ -15,7 +15,7 @@ class PostType extends BaseComponent
         add_filter( 'single_template', [$this, 'tmembers_single_template'] ) ;
         add_filter( 'archive_template', [$this, 'tmembers_archive_template'] ) ;
         add_action( 'pre_get_posts' ,[$this,'tmembers_query_post_type_team_members'], 1, 1 );
-        add_filter('enter_title_here', [$this,'tmembers_title_place_holder'] , 20 , 2 );
+        add_filter('enter_title_here', [$this,'tmembers_title_place_holder']);
         add_action( 'admin_head', [$this,'tmembers_replace_default_featured_image_meta_box']);
         add_action( 'admin_post_thumbnail_html', [$this,'tmembers_replace_default_featured_image_text']);
     }
@@ -129,12 +129,12 @@ class PostType extends BaseComponent
         }
     }
 
-    public function tmembers_title_place_holder($title, $post){
-        if ($post->post_type ="team_members"){
-            $title = __('Enter Team Member Name');
+    public function tmembers_title_place_holder($title){
+        if (get_post_type() === "team_members"){
+            return __('Enter Team Member Name');
         }
 
-        return$title;
+        return $title;
     }
 
     /**
